@@ -1,35 +1,36 @@
 pipeline {
-    agent any 
-    
-    stages{
-        stage("Clone Code"){
-            steps {
-                echo "Cloning the code"
-                git url:"https://github.com/LondheShubham153/django-notes-app.git", branch: "main"
+    agent{
+      label "dev"
+}
+    stages {
+        stage("Code"){ 
+            steps{
+             echo "Cloning Code"
+             git url:"https://github.com/kishor-645/django-notes-app.git", branch: "main"
             }
         }
         stage("Build"){
-            steps {
-                echo "Building the image"
-                sh "docker build -t my-note-app ."
-            }
+         steps{
+             echo "Build Code"
+             sh "docker build -t django-note-app ."             
+         }   
         }
-        stage("Push to Docker Hub"){
-            steps {
-                echo "Pushing the image to docker hub"
-                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                sh "docker tag my-note-app ${env.dockerHubUser}/my-note-app:latest"
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                sh "docker push ${env.dockerHubUser}/my-note-app:latest"
-                }
+        stage("Push to docker hub"){
+         steps{
+            echo "Push on Docker hub Code"
+            withCredentials([usernamePassword(credentialsId: 'dockid', usernameVariable: 'docker_user', passwordVariable: 'docker_pass')]) { 
+            sh "docker tag django-note-app ${env.docker_user}/django-note-app:latest"
+            sh "docker login -u ${env.docker_user} -p ${env.docker_pass}"
+            sh "docker push ${env.docker_user}/django-note-app:latest"
             }
+         }   
         }
         stage("Deploy"){
-            steps {
-                echo "Deploying the container"
-                sh "docker-compose down && docker-compose up -d"
-                
-            }
+         steps{
+            echo "Deploy Code on webserver"
+            sh "docker-compose down && docker-compose up -d "
+             
+         }    
         }
     }
 }
