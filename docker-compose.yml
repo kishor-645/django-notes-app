@@ -1,6 +1,6 @@
 version : "3.3"
 services :
   web :
-     image : kishor645/django-note-app:latest
+     image : HighskyIT/My-note-app:latest
      ports :
          - "8000:8000"
