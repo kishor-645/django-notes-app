@@ -1,6 +1,6 @@
 version : "3.3"
 services :
   web :
-     image : HighskyIT/my-note-app:latest
+     image : highskyit/my-note-app:latest
      ports :
          - "8000:8000"
